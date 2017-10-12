@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import weatherpi.keyu.com.entity.WeatherInfo;
 import weatherpi.keyu.com.utils.Constant;
 import weatherpi.keyu.com.utils.Utils;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView title_update_btn;
     SharedPreferences sp;
     String cityCode;
+    WeatherInfo weatherInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
