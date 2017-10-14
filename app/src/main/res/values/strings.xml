@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WeatherPi</string>
+    <string name="week_today">今天 %1$s</string>
 </resources>

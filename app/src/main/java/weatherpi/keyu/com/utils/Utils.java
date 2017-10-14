@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,5 +32,11 @@ public class Utils {
         if(DEBUGGING){
             Log.i(flag, msg);
         }
+    }
+
+    public static String getWeekday() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+        return dateFormat.format(date);
     }
 }
