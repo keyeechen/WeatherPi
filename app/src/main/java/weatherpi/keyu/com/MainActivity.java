@@ -53,16 +53,17 @@ public class MainActivity extends AppCompatActivity {
         wind = (TextView)findViewById(R.id.wind);
         title_update_btn = (ImageView)findViewById(R.id.title_update_btn);
         sp = getSharedPreferences("wheather", MODE_PRIVATE);
+        cityCode = sp.getString("cityCode", "101010100");
+        final String stringUrl = Constant.WEATHER_URL+cityCode;
         title_update_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cityCode = sp.getString("cityCode", "101010100");
-                String stringUrl = Constant.WEATHER_URL+cityCode;
                 Utils.log(getLocalClassName(), stringUrl);
                 getWeahterInfo(stringUrl);
             }
         });
         weatherInfo = new WeatherInfo();
+        getWeahterInfo(stringUrl);
 
     }
 
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     xpp.setInput(new StringReader(result));
                     int eventType = xpp.getEventType();
                     boolean dayFlag = false;//进入读取白天天气信息的标志
+                    boolean windRead = false;//是否已经读了风力
                     while(eventType != XmlPullParser.END_DOCUMENT){
                         if(eventType == XmlPullParser.START_TAG){
                             String tag = xpp.getName();
@@ -87,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
                             else if("wendu".equals(tag)){
                                 weatherInfo.setTemperature(xpp.nextText());
                             }
-                            else if("fengli".equals(tag)){
-                                weatherInfo.setWindForce(xpp.nextText());
+                            else if("fengli".equals(tag) && !windRead){
+                                windRead = true;
+                                weatherInfo.setWindForce(Utils.getWindForce(xpp.nextText()));
                             }
                             else if("shidu".equals(tag)){
                                 weatherInfo.setWetness(xpp.nextText());
@@ -130,24 +133,49 @@ public class MainActivity extends AppCompatActivity {
                         }
                         eventType = xpp.next();//进入下一个标签
                     }
-                    //更新天气信息
-                    city.setText(weatherInfo.getCity());
-                    time.setText(weatherInfo.getUpdateTime());
-                    humidity.setText(weatherInfo.getWetness());
-                    pm_data.setText(weatherInfo.getPm25());
-                    pm2_5_quality.setText(weatherInfo.getAirQuality());
-                    week_today.setText(String.format(getString(R.string.week_today), Utils.getWeekday()));
-                    climate.setText(weatherInfo.getWeatherDay());
-
-
+                    updateWeatherUI();
 
                 }
                 catch(Exception e){
                     System.out.println(e);
                 }
 
+
             }
         });
 
+    }
+
+    private void updateWeatherUI(){
+        city.setText(weatherInfo.getCity());
+        time.setText(weatherInfo.getUpdateTime());
+        humidity.setText(weatherInfo.getWetness());
+        pm_data.setText(weatherInfo.getPm25());
+        pm2_5_quality.setText(weatherInfo.getAirQuality());
+        week_today.setText(String.format(getString(R.string.week_today), Utils.getWeekday()));
+        climate.setText(weatherInfo.getWeatherDay());
+        String lowTemper = getString(R.string.unknown);
+        String highTemper = getString(R.string.unknown);
+        if(weatherInfo.getLowTemper() != null){
+            lowTemper = weatherInfo.getLowTemper().substring(weatherInfo.getLowTemper().indexOf(' ')+1);
+        }
+        if(weatherInfo.getHighTemper() != null){
+            highTemper = weatherInfo.getHighTemper().substring(weatherInfo.getHighTemper().indexOf(' ')+1);
+        }
+        temperature.setText(String.format(getString(R.string.temp_range), lowTemper, highTemper));
+        if(Utils.judgeDay()){
+            climate.setText(weatherInfo.getWeatherDay());
+        }
+        else{
+            climate.setText(weatherInfo.getWeatherNight());
+        }
+        int windForceInd = weatherInfo.getWindForce();
+        String[] windForces = getResources().getStringArray(R.array.wind_forces);
+        if(windForceInd != -1 && windForceInd < windForces.length){
+            wind.setText(windForces[windForceInd]);
+        }
+        else{
+            wind.setText(R.string.unknown);
+        }
     }
 }

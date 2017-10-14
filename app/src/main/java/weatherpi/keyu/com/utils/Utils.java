@@ -39,4 +39,24 @@ public class Utils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
         return dateFormat.format(date);
     }
+
+    public static boolean judgeDay(){
+        Date date =new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH");
+        int hour = Integer.parseInt(dateFormat.format(date));
+        return  hour >= 6 && hour <= 18 ? true : false;
+    }
+
+    public static int getWindForce(String srcWindForce){
+        int windForce = -1;
+        if(srcWindForce != null){
+            StringBuffer sb =new StringBuffer();
+            for(int i = 0; i < srcWindForce.length(); i++){
+              char  c = srcWindForce.charAt(i);
+                if(c >= '0' && c <= '9') sb.append(c);
+            }
+            if(sb.length() > 0) windForce = Integer.valueOf(sb.toString());
+        }
+        return windForce;
+    }
 }

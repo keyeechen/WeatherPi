@@ -15,6 +15,8 @@ public class WeatherInfo {
     private String  lowTemper;//最低温度
     private String  highTemper;//最高温度
     private String  weatherDay;//白天天气概况
+    private String  weatherNight;//晚上天气概况
+    private int  windForce;//风力
 
     public String getWeatherDay() {
         return weatherDay;
@@ -32,8 +34,7 @@ public class WeatherInfo {
         this.weatherNight = weatherNight;
     }
 
-    private String  weatherNight;//晚上天气概况
-    private String  windForce;//风力
+
 
     public String getUpdateTime() {
         return updateTime;
@@ -93,11 +94,11 @@ public class WeatherInfo {
 
 
 
-    public String getWindForce() {
+    public int getWindForce() {
         return windForce;
     }
 
-    public void setWindForce(String windForce) {
+    public void setWindForce(int windForce) {
         this.windForce = windForce;
     }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wind_forces">
+        <item>无风</item>
+        <item>软风</item>
+        <item>轻风</item>
+        <item>微风</item>
+        <item>和风</item>
+        <item>劲风</item>
+        <item>强风</item>
+        <item>疾风</item>
+        <item>大风</item>
+        <item>烈风</item>
+        <item>狂风</item>
+        <item>暴风</item>
+        <item>飓风</item>
+    </string-array>
+</resources>
