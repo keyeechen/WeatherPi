@@ -15,8 +15,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 
 import weatherpi.keyu.com.entity.WeatherInfo;
 import weatherpi.keyu.com.utils.Constant;
