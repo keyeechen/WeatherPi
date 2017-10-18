@@ -3,18 +3,14 @@ package weatherpi.keyu.com;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.HashMap;
 
 
 import weatherpi.keyu.com.entity.WeatherInfo;
@@ -36,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView temperature;
     private TextView climate;
     private TextView wind;
-
+    private ImageView pm2_5_img;
+    private HashMap<String, Integer> weahterImgs;
+    private ImageView weather_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         climate = (TextView)findViewById(R.id.climate);
         wind = (TextView)findViewById(R.id.wind);
         title_update_btn = (ImageView)findViewById(R.id.title_update_btn);
+        pm2_5_img = (ImageView)findViewById(R.id.pm2_5_img);
+        weather_img = (ImageView)findViewById(R.id.weather_img);
         sp = getSharedPreferences("wheather", MODE_PRIVATE);
         cityCode = sp.getString("cityCode", "101010100");
         final String stringUrl = Constant.WEATHER_URL+cityCode;
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 getWeahterInfo(stringUrl);
             }
         });
+        initWeatherMap();
         weatherInfo = new WeatherInfo();
         getWeahterInfo(stringUrl);
 
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                                 weatherInfo.setWetness(xpp.nextText());
                             }
                             else if("pm25".equals(tag)){
-                                weatherInfo.setPm25(xpp.nextText());
+                                weatherInfo.setPm25(Integer.valueOf(xpp.nextText()));
                             }
                             else if("updatetime".equals(tag)){
                                 weatherInfo.setUpdateTime(xpp.nextText());
@@ -148,12 +149,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateWeatherUI(){
         city.setText(weatherInfo.getCity());
-        time.setText(weatherInfo.getUpdateTime());
-        humidity.setText(weatherInfo.getWetness());
-        pm_data.setText(weatherInfo.getPm25());
+        time.setText(String.format(getString(R.string.temp_update_time), weatherInfo.getUpdateTime()));
+        humidity.setText(String.format(getString(R.string.wetness), weatherInfo.getWetness()));
+        pm_data.setText(String.valueOf(weatherInfo.getPm25()));
         pm2_5_quality.setText(weatherInfo.getAirQuality());
         week_today.setText(String.format(getString(R.string.week_today), Utils.getWeekday()));
-        climate.setText(weatherInfo.getWeatherDay());
         String lowTemper = getString(R.string.unknown);
         String highTemper = getString(R.string.unknown);
         if(weatherInfo.getLowTemper() != null){
@@ -163,12 +163,18 @@ public class MainActivity extends AppCompatActivity {
             highTemper = weatherInfo.getHighTemper().substring(weatherInfo.getHighTemper().indexOf(' ')+1);
         }
         temperature.setText(String.format(getString(R.string.temp_range), lowTemper, highTemper));
+        String weatherType = null;
         if(Utils.judgeDay()){
-            climate.setText(weatherInfo.getWeatherDay());
+            weatherType = weatherInfo.getWeatherDay();
         }
         else{
-            climate.setText(weatherInfo.getWeatherNight());
+            weatherType = weatherInfo.getWeatherNight();
         }
+        climate.setText(weatherType);
+        if(weahterImgs.get(weatherType) != null){
+            weather_img.setImageResource(weahterImgs.get(weatherType));
+        }
+
         int windForceInd = weatherInfo.getWindForce();
         String[] windForces = getResources().getStringArray(R.array.wind_forces);
         if(windForceInd != -1 && windForceInd < windForces.length){
@@ -177,5 +183,51 @@ public class MainActivity extends AppCompatActivity {
         else{
             wind.setText(R.string.unknown);
         }
+        int pm25 = weatherInfo.getPm25();
+        if(pm25 <= 50){
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_0_50);
+        }
+        else if(pm25 <= 100){
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_51_100);
+        }
+        else if(pm25 <= 150){
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_101_150);
+        }
+        else if(pm25 <= 200){
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_151_200);
+        }
+        else if(pm25 <= 300){
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_201_300);
+        }
+        else{
+            pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_greater_300
+            );
+        }
+
+
+    }
+
+    private void initWeatherMap(){
+        weahterImgs = new HashMap<>();
+        String[]  weatherTypes = getResources().getStringArray(R.array.weather_types);
+        weahterImgs.put(weatherTypes[0], R.drawable.biz_plugin_weather_baoxue);
+        weahterImgs.put(weatherTypes[1], R.drawable.biz_plugin_weather_baoyu);
+        weahterImgs.put(weatherTypes[2], R.drawable.biz_plugin_weather_dabaoyu);
+        weahterImgs.put(weatherTypes[3], R.drawable.biz_plugin_weather_daxue);
+        weahterImgs.put(weatherTypes[4], R.drawable.biz_plugin_weather_dayu);
+        weahterImgs.put(weatherTypes[5], R.drawable.biz_plugin_weather_duoyun);
+        weahterImgs.put(weatherTypes[6], R.drawable.biz_plugin_weather_leizhenyu);
+        weahterImgs.put(weatherTypes[7], R.drawable.biz_plugin_weather_leizhenyubingbao);
+        weahterImgs.put(weatherTypes[8], R.drawable.biz_plugin_weather_qing);
+        weahterImgs.put(weatherTypes[9], R.drawable.biz_plugin_weather_yin);
+        weahterImgs.put(weatherTypes[10], R.drawable.biz_plugin_weather_shachenbao);
+        weahterImgs.put(weatherTypes[11], R.drawable.biz_plugin_weather_tedabaoyu);
+        weahterImgs.put(weatherTypes[12], R.drawable.biz_plugin_weather_xiaoxue);
+        weahterImgs.put(weatherTypes[13], R.drawable.biz_plugin_weather_xiaoyu);
+        weahterImgs.put(weatherTypes[14], R.drawable.biz_plugin_weather_yujiaxue);
+        weahterImgs.put(weatherTypes[15], R.drawable.biz_plugin_weather_zhenxue);
+        weahterImgs.put(weatherTypes[16], R.drawable.biz_plugin_weather_zhenyu);
+        weahterImgs.put(weatherTypes[17], R.drawable.biz_plugin_weather_zhenxue);
+        weahterImgs.put(weatherTypes[18], R.drawable.biz_plugin_weather_zhongyu);
     }
 }

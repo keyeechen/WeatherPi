@@ -9,7 +9,7 @@ public class WeatherInfo {
     private String  updateTime;//更新时间
     private String  wetness;//湿度
     private String temperature;//温度
-    private String  pm25;//pm2.5
+    private int  pm25;//pm2.5
     private String  airQuality;//空气质量
     private String  dayInfo;//今天的信息
     private String  lowTemper;//最低温度
@@ -52,11 +52,11 @@ public class WeatherInfo {
         this.wetness = wetness;
     }
 
-    public String getPm25() {
+    public int getPm25() {
         return pm25;
     }
 
-    public void setPm25(String pm25) {
+    public void setPm25(int pm25) {
         this.pm25 = pm25;
     }
 

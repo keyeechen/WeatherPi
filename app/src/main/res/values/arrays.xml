@@ -15,4 +15,25 @@
         <item>暴风</item>
         <item>飓风</item>
     </string-array>
+    <string-array name="weather_types">
+        <item>暴雪</item>
+        <item>暴雨</item>
+        <item>大暴雨</item>
+        <item>大雪</item>
+        <item>大雨</item>
+        <item>多云</item>
+        <item>雷阵雨</item>
+        <item>雷阵雨冰雹</item>
+        <item>晴</item>
+        <item>阴</item>
+        <item>沙尘暴</item>
+        <item>特大暴雨</item>
+        <item>小雪</item>
+        <item>小雨</item>
+        <item>雨夹雪</item>
+        <item>阵雪</item>
+        <item>阵雨</item>
+        <item>中雪</item>
+        <item>中雨</item>
+    </string-array>
 </resources>
