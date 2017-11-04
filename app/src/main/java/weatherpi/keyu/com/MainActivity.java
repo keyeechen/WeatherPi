@@ -1,5 +1,6 @@
 package weatherpi.keyu.com;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView pm2_5_img;
     private HashMap<String, Integer> weahterImgs;
     private ImageView weather_img;
+    private ImageView title_city_manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         title_update_btn = (ImageView)findViewById(R.id.title_update_btn);
         pm2_5_img = (ImageView)findViewById(R.id.pm2_5_img);
         weather_img = (ImageView)findViewById(R.id.weather_img);
+        title_city_manager = (ImageView)findViewById(R.id.title_city_manager);
         sp = getSharedPreferences("wheather", MODE_PRIVATE);
         cityCode = sp.getString("cityCode", "101010100");
         final String stringUrl = Constant.WEATHER_URL+cityCode;
@@ -60,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Utils.log(getLocalClassName(), stringUrl);
                 getWeahterInfo(stringUrl);
+            }
+        });
+        title_city_manager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, SelectActivity.class);
+                startActivity(i);
             }
         });
         initWeatherMap();

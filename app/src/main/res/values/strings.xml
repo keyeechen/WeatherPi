@@ -5,4 +5,5 @@
     <string name="unknown">未知</string>
     <string name="temp_update_time">天气更新时间：%1$s</string>
     <string name="wetness">湿度：%1$s</string>
+    <string name="title_activity_select">SelectActivity</string>
 </resources>
