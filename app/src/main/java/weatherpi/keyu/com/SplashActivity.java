@@ -45,6 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         if(isFirst){
             pagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
+
         }
         else{
             new Handler().postDelayed(new Runnable() {
