@@ -10,10 +10,23 @@ public class CityInfo {
     private int _id;
     private String province;
     private String city;
-    private String num;
+    private String number;
     private String allpy;
     private String allfirstpy;
     private String firstpy;
+
+    @Override
+    public String toString() {
+        return "CityInfo{" +
+                "_id=" + _id +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", number='" + number + '\'' +
+                ", allpy='" + allpy + '\'' +
+                ", allfirstpy='" + allfirstpy + '\'' +
+                ", firstpy='" + firstpy + '\'' +
+                '}';
+    }
 
     public int get_id() {
         return _id;
@@ -38,12 +51,12 @@ public class CityInfo {
         this.city = city;
     }
 
-    public String getNum() {
-        return num;
+    public String getNumber() {
+        return number;
     }
 
-    public void setNum(String num) {
-        this.num = num;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getAllpy() {

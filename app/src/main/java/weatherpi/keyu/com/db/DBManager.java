@@ -9,13 +9,13 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import weatherpi.keyu.com.entity.CityInfo;
-import weatherpi.keyu.com.utils.Utils;
+
+import static weatherpi.keyu.com.utils.Constant.*;
 
 /**
  * Created by Administrator on 2017/11/1.
@@ -24,56 +24,50 @@ import weatherpi.keyu.com.utils.Utils;
 public class DBManager {
 
     public static SQLiteDatabase getDatabase(Context mContext, String dbName){
-        try {
-            String dbPath = "/data" + Environment.getDataDirectory() + File.separator + mContext.getPackageName() + File.separator + "database" + File.separator + dbName;
-            Utils.log(mContext.getPackageName(), "dbPath = " + dbPath);
-            File file =  new File(dbPath);
-            if(!file.exists()){//数据库不存在则拷贝
-                String dbDir = "/data" + Environment.getDataDirectory() + File.separator + mContext.getPackageName() + File.separator + "database" + File.separator;
-                File dir = new File(dbDir);
-                if(!dir.exists()){//创建数据库文件的父目录
-                    dir.mkdirs();
-                }
-                InputStream inputStream = mContext.getAssets().open(dbName);
-                //BufferedInputStream  bufferedInputStream = new BufferedInputStream(inputStream);
-                FileOutputStream fileOutputStream = new FileOutputStream(dbPath);
-                //BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-                byte[] buf = new byte[1024];
-                int len = 0;
-                while(inputStream.read(buf, 0, len) != -1){
-                    fileOutputStream.write(buf, 0, len);
-                    fileOutputStream.flush();
-                }
-                fileOutputStream.close();
-                inputStream.close();
-                //bufferedInputStream.close();
-                //inputStream.close();
-            }
-            return SQLiteDatabase.openOrCreateDatabase(dbPath, null, null);
+        String dbDirPath = "/data" + Environment.getDataDirectory() + File.separator + mContext.getPackageName() + File.separator + DB_DIR + File.separator;
+        String dbPath = dbDirPath + DB_NAME;
+         File dbFile = new File(dbPath);
+         if(!dbFile.exists()){//数据库文件不存在则为其创建目录
+             File dbDir = new File(dbDirPath);
+             if(!dbDir.exists()){
+                 dbDir.mkdirs();
+             }
+             try {
+                 InputStream inputStream = mContext.getAssets().open(dbName);
+                 BufferedInputStream bufferedInputStream =new BufferedInputStream(inputStream);
+                 FileOutputStream fileOutputStream = new FileOutputStream(dbPath);
+                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                 byte buf[] = new byte[1024];
+                 int len;
+                 while((len = bufferedInputStream.read(buf)) != -1){
+                     bufferedOutputStream.write(buf, 0, len);
+                     bufferedOutputStream.flush();
+                 }
 
-        }
-        catch(IOException ioe){
-            System.out.println(ioe);
-        }
-        return null;
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+         }
+         return SQLiteDatabase.openOrCreateDatabase(dbPath, null);
     }
 
-    public static List<CityInfo>    getCityInfo(Context mContext, String dbName, int limit){
-        SQLiteDatabase db = DBManager.getDatabase(mContext, dbName);
-        Utils.log(mContext.getPackageName(), db.getPath());
-        List<CityInfo> citys = new ArrayList<>();
-        if(db != null){
-            Cursor cursor = db.query("city", null, null, null, null, null, null, limit+"");
-            while(!cursor.isAfterLast()){
-                CityInfo city = new CityInfo();
-                city.setCity(cursor.getString(cursor.getColumnIndex("city")));
-                city.setNum(cursor.getString(cursor.getColumnIndex("num")));
-                citys.add(city);
-                cursor.moveToNext();
-            }
+    public static List<CityInfo>    getCityInfo(Context mContext, String dbName) {
+        List<CityInfo> cityInfos = new ArrayList<>();
+        SQLiteDatabase database = getDatabase(mContext, dbName);
+        Cursor cursor = database.query(DB_TABLE_NAME, null, null, null, null, null, null);
+        while(cursor.moveToNext()){
+            CityInfo cityInfo = new CityInfo();
+            cityInfo.setProvince(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_PROVINCE)));
+            cityInfo.setCity(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_CITY)));
+            cityInfo.setNumber(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_NUMBER)));
+            cityInfo.setAllpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_ALLPY)));
+            cityInfo.setAllfirstpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_ALLFIRSTPY)));
+            cityInfo.setFirstpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_FIRSTPY)));
+            cityInfos.add(cityInfo);
         }
-
-        return citys;
+        cursor.close();
+        database.close();
+        return cityInfos;
     }
 
 }

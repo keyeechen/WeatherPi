@@ -13,10 +13,12 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import weatherpi.keyu.com.db.DBManager;
 import weatherpi.keyu.com.entity.CityInfo;
+import weatherpi.keyu.com.utils.Constant;
 
 public class SelectActivity extends AppCompatActivity {
     private ListView lv;
@@ -28,7 +30,7 @@ public class SelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select);
         lv =    (ListView)findViewById(R.id.lv);
         weatherAdapter = new WeatherAdapter(this);
-        citys = DBManager.getCityInfo(this, "city.db", 10);
+        citys = DBManager.getCityInfo(this, Constant.DB_NAME);
         lv.setAdapter(weatherAdapter);
 
     }
