@@ -2,10 +2,12 @@ package weatherpi.keyu.com;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,10 +36,16 @@ public class SelectActivity extends AppCompatActivity {
     private static List<CityInfo> citys;
     private static List<CityInfo> curCitys;
     private EditText editText;
+    private ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
+        actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.choose_city));
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         lv =    (ListView)findViewById(R.id.lv);
         editText = (EditText) findViewById(R.id.edit_text_input);
         weatherAdapter = new WeatherAdapter(this);
@@ -120,5 +128,14 @@ public class SelectActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return true;
+    }
 }

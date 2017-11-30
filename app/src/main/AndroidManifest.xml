@@ -18,7 +18,7 @@
         <activity
             android:name=".SelectActivity"
             android:label="@string/title_activity_select"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".SplashActivity"
             android:label="@string/title_activity_splash"

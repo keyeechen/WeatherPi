@@ -8,4 +8,5 @@
     <string name="title_activity_select">SelectActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="start">开始</string>
+    <string name="choose_city">选择城市</string>
 </resources>
