@@ -73,7 +73,7 @@ public class Utils {
     }
 
     // 根据Unicode编码完美的判断中文汉字和符号
-    private static boolean isChinese(char c) {
+    public static boolean isChinese(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
         if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
                 || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS

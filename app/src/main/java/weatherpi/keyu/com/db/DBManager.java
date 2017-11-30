@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import weatherpi.keyu.com.entity.CityInfo;
+import weatherpi.keyu.com.utils.Utils;
 
 import static weatherpi.keyu.com.utils.Constant.*;
 
@@ -71,10 +72,10 @@ public class DBManager {
     }
 
 
-    public static List<CityInfo>    getCityInfoBySql(Context mContext, String dbName, String columnName, String input) {
+    public static List<CityInfo>    getCityInfoBySql(Context mContext, String dbName, String sql) {
+        Utils.log(mContext.getPackageName(), "sql = " + sql);
         List<CityInfo> cityInfos = new ArrayList<>();
         SQLiteDatabase database = getDatabase(mContext, dbName);
-        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + columnName + " LIKE " + " \'%" + input + "%\'";
         Cursor cursor = database.rawQuery(sql, null);
         while(cursor.moveToNext()){
             CityInfo cityInfo = new CityInfo();

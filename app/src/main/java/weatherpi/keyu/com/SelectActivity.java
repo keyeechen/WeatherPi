@@ -13,11 +13,20 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import weatherpi.keyu.com.db.DBManager;
 import weatherpi.keyu.com.entity.CityInfo;
-import weatherpi.keyu.com.utils.Constant;
+import weatherpi.keyu.com.utils.Utils;
+
+import static weatherpi.keyu.com.utils.Constant.DB_NAME;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_COLUMN_ALLFIRSTPY;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_COLUMN_ALLPY;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_COLUMN_CITY;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_COLUMN_FIRSTPY;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_COLUMN_PROVINCE;
+import static weatherpi.keyu.com.utils.Constant.DB_TABLE_NAME;
 
 public class SelectActivity extends AppCompatActivity {
     private ListView lv;
@@ -32,24 +41,49 @@ public class SelectActivity extends AppCompatActivity {
         lv =    (ListView)findViewById(R.id.lv);
         editText = (EditText) findViewById(R.id.edit_text_input);
         weatherAdapter = new WeatherAdapter(this);
-        citys = DBManager.getCityInfo(this, Constant.DB_NAME);
+        citys = DBManager.getCityInfo(this, DB_NAME);
         curCitys = citys;
         lv.setAdapter(weatherAdapter);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
 
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                curCitys = DBManager.getCityInfoBySql(SelectActivity.this, Constant.DB_NAME, Constant.DB_TABLE_COLUMN_ALLFIRSTPY, charSequence.toString());
-                weatherAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String input = editable.toString();
+                int len = input.length();
+                if (len == 0) {
+                    curCitys = citys;
+                } else if (len == 1) {
+                    char c = input.charAt(0);
+                    if (Utils.isChinese(c)) {//中文检索
+                        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + DB_TABLE_COLUMN_PROVINCE + " LIKE " + "\'" + input + "%\'" + " or " + DB_TABLE_COLUMN_CITY + " LIKE " + "\'" + input + "%\'";
+                        curCitys = DBManager.getCityInfoBySql(SelectActivity.this, DB_NAME, sql);
+                    } else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+                        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + DB_TABLE_COLUMN_FIRSTPY + " LIKE " + "\'" + input + "%\'";
+                        curCitys = DBManager.getCityInfoBySql(SelectActivity.this, DB_NAME, sql);
+                    } else {//非法字符
+                        curCitys = new ArrayList<>();
+                    }
+                } else {
+                    if (Utils.isChinese(input)) {//含中文
+                        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + DB_TABLE_COLUMN_PROVINCE + " LIKE " + "\'" + input + "%\'" + " or " + DB_TABLE_COLUMN_CITY + " LIKE " + "\'" + input + "%\'";
+                        curCitys = DBManager.getCityInfoBySql(SelectActivity.this, DB_NAME, sql);
+                    } else if (input.matches("[a-zA-Z]+")) {//拼音
+                        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + DB_TABLE_COLUMN_ALLFIRSTPY + " LIKE " + "\'" + input + "%\'" + " or " + DB_TABLE_COLUMN_ALLPY + " LIKE " + "\'" + input + "%\'";
+                        curCitys = DBManager.getCityInfoBySql(SelectActivity.this, DB_NAME, sql);
+                    } else {//含非法字符
+                        curCitys = new ArrayList<>();
+                    }
+                }
+                weatherAdapter.notifyDataSetChanged();
 
             }
         });
