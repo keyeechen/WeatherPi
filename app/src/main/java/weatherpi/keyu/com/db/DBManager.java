@@ -70,4 +70,24 @@ public class DBManager {
         return cityInfos;
     }
 
+
+    public static List<CityInfo>    getCityInfoBySql(Context mContext, String dbName, String columnName, String input) {
+        List<CityInfo> cityInfos = new ArrayList<>();
+        SQLiteDatabase database = getDatabase(mContext, dbName);
+        String sql = "SELECT * FROM " + DB_TABLE_NAME + " WHERE " + columnName + " LIKE " + " \'%" + input + "%\'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while(cursor.moveToNext()){
+            CityInfo cityInfo = new CityInfo();
+            cityInfo.setProvince(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_PROVINCE)));
+            cityInfo.setCity(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_CITY)));
+            cityInfo.setNumber(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_NUMBER)));
+            cityInfo.setAllpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_ALLPY)));
+            cityInfo.setAllfirstpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_ALLFIRSTPY)));
+            cityInfo.setFirstpy(cursor.getString(cursor.getColumnIndex(DB_TABLE_COLUMN_FIRSTPY)));
+            cityInfos.add(cityInfo);
+        }
+        cursor.close();
+        database.close();
+        return cityInfos;
+    }
 }
