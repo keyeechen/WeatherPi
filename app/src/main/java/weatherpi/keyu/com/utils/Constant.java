@@ -17,6 +17,10 @@ public class Constant {
     public static final String DB_TABLE_COLUMN_ALLFIRSTPY ="allfirstpy";
     public static final String DB_TABLE_COLUMN_FIRSTPY ="firstpy";
     public static final String DB_DIR ="database1";
+    public static final String CUR_CITY ="cityCode";
+    public static final int CHOOSE_CITY_REQUEST_CODE = 0;
+    public static final int CHOOSE_CITY_RESULT_CODE = 0;
+
 
 
 

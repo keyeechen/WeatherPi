@@ -1,10 +1,13 @@
 package weatherpi.keyu.com.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Administrator on 2017/11/1.
  */
 
-public class CityInfo {
+public class CityInfo implements Parcelable {
 
 
     private int _id;
@@ -82,4 +85,46 @@ public class CityInfo {
     public void setFirstpy(String firstpy) {
         this.firstpy = firstpy;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this._id);
+        dest.writeString(this.province);
+        dest.writeString(this.city);
+        dest.writeString(this.number);
+        dest.writeString(this.allpy);
+        dest.writeString(this.allfirstpy);
+        dest.writeString(this.firstpy);
+    }
+
+    public CityInfo() {
+    }
+
+    protected CityInfo(Parcel in) {
+        this._id = in.readInt();
+        this.province = in.readString();
+        this.city = in.readString();
+        this.number = in.readString();
+        this.allpy = in.readString();
+        this.allfirstpy = in.readString();
+        this.firstpy = in.readString();
+    }
+
+    public static final Parcelable.Creator<CityInfo> CREATOR = new Parcelable.Creator<CityInfo>() {
+        @Override
+        public CityInfo createFromParcel(Parcel source) {
+            return new CityInfo(source);
+        }
+
+        @Override
+        public CityInfo[] newArray(int size) {
+            return new CityInfo[size];
+        }
+    };
 }

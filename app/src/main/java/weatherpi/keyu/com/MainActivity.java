@@ -14,6 +14,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 
 
+import weatherpi.keyu.com.entity.CityInfo;
 import weatherpi.keyu.com.entity.WeatherInfo;
 import weatherpi.keyu.com.utils.Constant;
 import weatherpi.keyu.com.utils.NetTasker;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, SelectActivity.class);
-                startActivity(i);
+                startActivityForResult(i, Constant.CHOOSE_CITY_REQUEST_CODE);
             }
         });
         initWeatherMap();
@@ -239,5 +240,17 @@ public class MainActivity extends AppCompatActivity {
         weahterImgs.put(weatherTypes[16], R.drawable.biz_plugin_weather_zhenyu);
         weahterImgs.put(weatherTypes[17], R.drawable.biz_plugin_weather_zhenxue);
         weahterImgs.put(weatherTypes[18], R.drawable.biz_plugin_weather_zhongyu);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Utils.log(getLocalClassName(), "onActivityResult");
+           if(requestCode == Constant.CHOOSE_CITY_REQUEST_CODE){
+               if(resultCode == Constant.CHOOSE_CITY_RESULT_CODE){
+                   CityInfo cityInfo = data.getParcelableExtra(Constant.CUR_CITY);
+                   String url = Constant.WEATHER_URL + cityInfo.getNumber();
+                   getWeahterInfo(url);
+               }
+           }
     }
 }

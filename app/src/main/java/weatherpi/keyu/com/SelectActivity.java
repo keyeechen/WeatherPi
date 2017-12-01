@@ -1,6 +1,7 @@
 package weatherpi.keyu.com;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +9,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,6 +24,7 @@ import java.util.List;
 
 import weatherpi.keyu.com.db.DBManager;
 import weatherpi.keyu.com.entity.CityInfo;
+import weatherpi.keyu.com.utils.Constant;
 import weatherpi.keyu.com.utils.Utils;
 
 import static weatherpi.keyu.com.utils.Constant.DB_NAME;
@@ -93,6 +98,33 @@ public class SelectActivity extends AppCompatActivity {
                 }
                 weatherAdapter.notifyDataSetChanged();
 
+            }
+        });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(inputMethodManager.isActive()){
+                    inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                }
+                Intent intent = new Intent();
+                intent.putExtra(Constant.CUR_CITY, curCitys.get(i));
+                setResult(Constant.CHOOSE_CITY_RESULT_CODE, intent);
+                finish();
+            }
+        });
+
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    final int DRAWABLE_RIGHT = 2;
+                    if(motionEvent.getRawX() > editText.getRight() - editText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()){
+                        editText.setText("");
+                        return  true;
+                    }
+                }
+                return false;
             }
         });
 
