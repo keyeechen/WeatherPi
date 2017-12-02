@@ -42,6 +42,42 @@ public class MainActivity extends AppCompatActivity {
     private ImageView weather_img;
     private ImageView title_city_manager;
     private String cityUrl;
+    private TextView tv_day1_title;
+    private TextView tv_day1_date;
+    private TextView tv_day1_air_quality;
+    private TextView tv_day1_weather;
+    private ImageView iv_day1_weather;
+
+    private TextView tv_day2_title;
+    private TextView tv_day2_date;
+    private TextView tv_day2_air_quality;
+    private TextView tv_day2_weather;
+    private ImageView iv_day2_weather;
+
+    private TextView tv_day3_title;
+    private TextView tv_day3_date;
+    private TextView tv_day3_air_quality;
+    private TextView tv_day3_weather;
+    private ImageView iv_day3_weather;
+
+    private TextView tv_day4_title;
+    private TextView tv_day4_date;
+    private TextView tv_day4_air_quality;
+    private TextView tv_day4_weather;
+    private ImageView iv_day4_weather;
+
+    private TextView tv_day5_title;
+    private TextView tv_day5_date;
+    private TextView tv_day5_air_quality;
+    private TextView tv_day5_weather;
+    private ImageView iv_day5_weather;
+
+    private TextView tv_day6_title;
+    private TextView tv_day6_date;
+    private TextView tv_day6_air_quality;
+    private TextView tv_day6_weather;
+    private ImageView iv_day6_weather;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +124,49 @@ public class MainActivity extends AppCompatActivity {
         // set night
         chartView.setTempNight(new int[]{7, 5, 9, 10, 3, 2});
         chartView.invalidate();
+
+        tv_day1_title = (TextView) findViewById(R.id.tv_day1_title);
+        tv_day1_date = (TextView) findViewById(R.id.tv_day1_date);
+        tv_day1_air_quality = (TextView) findViewById(R.id.tv_day1_air_quality);
+        tv_day1_weather = (TextView) findViewById(R.id.tv_day1_weather);
+        tv_day1_title = (TextView) findViewById(R.id.tv_day1_title);
+        iv_day1_weather = (ImageView) findViewById(R.id.iv_day1_weather);
+
+        tv_day2_title = (TextView) findViewById(R.id.tv_day2_title);
+        tv_day2_date = (TextView) findViewById(R.id.tv_day2_date);
+        tv_day2_air_quality = (TextView) findViewById(R.id.tv_day2_air_quality);
+        tv_day2_weather = (TextView) findViewById(R.id.tv_day2_weather);
+        tv_day2_title = (TextView) findViewById(R.id.tv_day2_title);
+        iv_day2_weather = (ImageView) findViewById(R.id.iv_day2_weather);
+
+        tv_day3_title = (TextView) findViewById(R.id.tv_day3_title);
+        tv_day3_date = (TextView) findViewById(R.id.tv_day3_date);
+        tv_day3_air_quality = (TextView) findViewById(R.id.tv_day3_air_quality);
+        tv_day3_weather = (TextView) findViewById(R.id.tv_day3_weather);
+        tv_day3_title = (TextView) findViewById(R.id.tv_day3_title);
+        iv_day3_weather = (ImageView) findViewById(R.id.iv_day3_weather);
+
+        tv_day4_title = (TextView) findViewById(R.id.tv_day4_title);
+        tv_day4_date = (TextView) findViewById(R.id.tv_day4_date);
+        tv_day4_air_quality = (TextView) findViewById(R.id.tv_day4_air_quality);
+        tv_day4_weather = (TextView) findViewById(R.id.tv_day4_weather);
+        tv_day4_title = (TextView) findViewById(R.id.tv_day4_title);
+        iv_day4_weather = (ImageView) findViewById(R.id.iv_day4_weather);
+
+        tv_day5_title = (TextView) findViewById(R.id.tv_day5_title);
+        tv_day5_date = (TextView) findViewById(R.id.tv_day5_date);
+        tv_day5_air_quality = (TextView) findViewById(R.id.tv_day5_air_quality);
+        tv_day5_weather = (TextView) findViewById(R.id.tv_day5_weather);
+        tv_day5_title = (TextView) findViewById(R.id.tv_day5_title);
+        iv_day5_weather = (ImageView) findViewById(R.id.iv_day5_weather);
+
+        tv_day6_title = (TextView) findViewById(R.id.tv_day6_title);
+        tv_day6_date = (TextView) findViewById(R.id.tv_day6_date);
+        tv_day6_air_quality = (TextView) findViewById(R.id.tv_day6_air_quality);
+        tv_day6_weather = (TextView) findViewById(R.id.tv_day6_weather);
+        tv_day6_title = (TextView) findViewById(R.id.tv_day6_title);
+        iv_day6_weather = (ImageView) findViewById(R.id.iv_day6_weather);
+        
 
     }
 
