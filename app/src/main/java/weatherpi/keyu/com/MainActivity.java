@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kaku.wcv.WeatherChartView;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
@@ -34,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView temperature;
     private TextView climate;
     private TextView wind;
+    private TextView title_city_name;
     private ImageView pm2_5_img;
     private HashMap<String, Integer> weahterImgs;
     private ImageView weather_img;
     private ImageView title_city_manager;
+    private String cityUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +60,16 @@ public class MainActivity extends AppCompatActivity {
         pm2_5_img = (ImageView)findViewById(R.id.pm2_5_img);
         weather_img = (ImageView)findViewById(R.id.weather_img);
         title_city_manager = (ImageView)findViewById(R.id.title_city_manager);
+        title_city_name = (TextView) findViewById(R.id.title_city_name);
         sp = getSharedPreferences("wheather", MODE_PRIVATE);
-        cityCode = sp.getString("cityCode", "101010100");
-        final String stringUrl = Constant.WEATHER_URL+cityCode;
+        cityCode = sp.getString(Constant.CUR_CITY, Constant.DEFAULT_CITY_CODE);
+        cityUrl = Constant.WEATHER_URL + cityCode;
         title_update_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.log(getLocalClassName(), stringUrl);
-                getWeahterInfo(stringUrl);
+                Utils.log(getLocalClassName(), cityUrl);
+                cityUrl = Constant.WEATHER_URL + cityCode;
+                getWeahterInfo(cityUrl);
             }
         });
         title_city_manager.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
         });
         initWeatherMap();
         weatherInfo = new WeatherInfo();
-        getWeahterInfo(stringUrl);
+        getWeahterInfo(cityUrl);
+        WeatherChartView chartView = (WeatherChartView) findViewById(R.id.line_char);
+        // set day
+        chartView.setTempDay(new int[]{14, 15, 16, 17, 9, 9});
+        // set night
+        chartView.setTempNight(new int[]{7, 5, 9, 10, 3, 2});
+        chartView.invalidate();
 
     }
 
@@ -249,6 +261,8 @@ public class MainActivity extends AppCompatActivity {
                if(resultCode == Constant.CHOOSE_CITY_RESULT_CODE){
                    CityInfo cityInfo = data.getParcelableExtra(Constant.CUR_CITY);
                    String url = Constant.WEATHER_URL + cityInfo.getNumber();
+                   title_city_name.setText(cityInfo.getCity());
+                   cityCode = cityInfo.getNumber();
                    getWeahterInfo(url);
                }
            }
