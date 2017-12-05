@@ -13,10 +13,13 @@ import com.kaku.wcv.WeatherChartView;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 import weatherpi.keyu.com.entity.CityInfo;
+import weatherpi.keyu.com.entity.WeatherForcast;
 import weatherpi.keyu.com.entity.WeatherInfo;
 import weatherpi.keyu.com.utils.Constant;
 import weatherpi.keyu.com.utils.NetTasker;
@@ -26,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView title_update_btn;
     private SharedPreferences sp;
     private String cityCode;
-    private WeatherInfo weatherInfo;
+    private WeatherInfo todayWeatherInfo;
     private TextView city;
     private TextView time;
     private TextView humidity;
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_day6_air_quality;
     private TextView tv_day6_weather;
     private ImageView iv_day6_weather;
-    
+    private List<WeatherForcast> weatherForcasts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Utils.log(getLocalClassName(), cityUrl);
                 cityUrl = Constant.WEATHER_URL + cityCode;
-                getWeahterInfo(cityUrl);
+                getWeatherInfo(cityUrl);
             }
         });
         title_city_manager.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         initWeatherMap();
-        weatherInfo = new WeatherInfo();
-        getWeahterInfo(cityUrl);
+        todayWeatherInfo = new WeatherInfo();
+        weatherForcasts = new ArrayList<>();
         WeatherChartView chartView = (WeatherChartView) findViewById(R.id.line_char);
         // set day
         chartView.setTempDay(new int[]{14, 15, 16, 17, 9, 9});
@@ -129,48 +132,43 @@ public class MainActivity extends AppCompatActivity {
         tv_day1_date = (TextView) findViewById(R.id.tv_day1_date);
         tv_day1_air_quality = (TextView) findViewById(R.id.tv_day1_air_quality);
         tv_day1_weather = (TextView) findViewById(R.id.tv_day1_weather);
-        tv_day1_title = (TextView) findViewById(R.id.tv_day1_title);
         iv_day1_weather = (ImageView) findViewById(R.id.iv_day1_weather);
 
         tv_day2_title = (TextView) findViewById(R.id.tv_day2_title);
         tv_day2_date = (TextView) findViewById(R.id.tv_day2_date);
         tv_day2_air_quality = (TextView) findViewById(R.id.tv_day2_air_quality);
         tv_day2_weather = (TextView) findViewById(R.id.tv_day2_weather);
-        tv_day2_title = (TextView) findViewById(R.id.tv_day2_title);
         iv_day2_weather = (ImageView) findViewById(R.id.iv_day2_weather);
 
         tv_day3_title = (TextView) findViewById(R.id.tv_day3_title);
         tv_day3_date = (TextView) findViewById(R.id.tv_day3_date);
         tv_day3_air_quality = (TextView) findViewById(R.id.tv_day3_air_quality);
         tv_day3_weather = (TextView) findViewById(R.id.tv_day3_weather);
-        tv_day3_title = (TextView) findViewById(R.id.tv_day3_title);
         iv_day3_weather = (ImageView) findViewById(R.id.iv_day3_weather);
 
         tv_day4_title = (TextView) findViewById(R.id.tv_day4_title);
         tv_day4_date = (TextView) findViewById(R.id.tv_day4_date);
         tv_day4_air_quality = (TextView) findViewById(R.id.tv_day4_air_quality);
         tv_day4_weather = (TextView) findViewById(R.id.tv_day4_weather);
-        tv_day4_title = (TextView) findViewById(R.id.tv_day4_title);
         iv_day4_weather = (ImageView) findViewById(R.id.iv_day4_weather);
 
         tv_day5_title = (TextView) findViewById(R.id.tv_day5_title);
         tv_day5_date = (TextView) findViewById(R.id.tv_day5_date);
         tv_day5_air_quality = (TextView) findViewById(R.id.tv_day5_air_quality);
         tv_day5_weather = (TextView) findViewById(R.id.tv_day5_weather);
-        tv_day5_title = (TextView) findViewById(R.id.tv_day5_title);
         iv_day5_weather = (ImageView) findViewById(R.id.iv_day5_weather);
 
         tv_day6_title = (TextView) findViewById(R.id.tv_day6_title);
         tv_day6_date = (TextView) findViewById(R.id.tv_day6_date);
         tv_day6_air_quality = (TextView) findViewById(R.id.tv_day6_air_quality);
         tv_day6_weather = (TextView) findViewById(R.id.tv_day6_weather);
-        tv_day6_title = (TextView) findViewById(R.id.tv_day6_title);
         iv_day6_weather = (ImageView) findViewById(R.id.iv_day6_weather);
-        
+        getWeatherInfo(cityUrl);
+
 
     }
 
-    private void getWeahterInfo(final String stringUrl){
+    private void getWeatherInfo(final String stringUrl){
         new NetTasker(this).visitNet(stringUrl, new NetTasker.CallBack() {
             @Override
             public void doAfterTask(String result) {
@@ -183,56 +181,123 @@ public class MainActivity extends AppCompatActivity {
                     int eventType = xpp.getEventType();
                     boolean dayFlag = false;//进入读取白天天气信息的标志
                     boolean windRead = false;//是否已经读了风力
+                    boolean windDirectionRead = false;//是否已经读了风向
+                    int dayCnt = 0;//预测的日期，是第几天
+                    WeatherForcast weatherForcast = new WeatherForcast();
                     while(eventType != XmlPullParser.END_DOCUMENT){
                         if(eventType == XmlPullParser.START_TAG){
                             String tag = xpp.getName();
                             if("city".equals(tag)){
-                                weatherInfo.setCity(xpp.nextText());
+                                todayWeatherInfo.setCity(xpp.nextText());
                             }
                             else if("wendu".equals(tag)){
-                                weatherInfo.setTemperature(xpp.nextText());
+                                todayWeatherInfo.setTemperature(xpp.nextText());
                             }
                             else if("fengli".equals(tag) && !windRead){
                                 windRead = true;
-                                weatherInfo.setWindForce(Utils.getWindForce(xpp.nextText()));
-                            }
-                            else if("shidu".equals(tag)){
-                                weatherInfo.setWetness(xpp.nextText());
-                            }
-                            else if("pm25".equals(tag)){
-                                weatherInfo.setPm25(Integer.valueOf(xpp.nextText()));
-                            }
-                            else if("updatetime".equals(tag)){
-                                weatherInfo.setUpdateTime(xpp.nextText());
-                            }
-                            else if("quality".equals(tag)){
-                                weatherInfo.setAirQuality(xpp.nextText());
-                            }
-                            else if("high".equals(tag)){
-                                weatherInfo.setHighTemper(xpp.nextText());
-                            }
-                            else if("low".equals(tag)){
-                                weatherInfo.setLowTemper(xpp.nextText());
-                            }
-                            else if("day".equals(tag)){
+                                todayWeatherInfo.setWindForce(Utils.getWindForce(xpp.nextText()));
+                            } else if ("fengxiang".equals(tag) && !windDirectionRead) {
+                                windDirectionRead = true;
+                                todayWeatherInfo.setWindForce(Utils.getWindForce(xpp.nextText()));
+                            } else if ("shidu".equals(tag)) {
+                                todayWeatherInfo.setWetness(xpp.nextText());
+                            } else if ("pm25".equals(tag)) {
+                                todayWeatherInfo.setPm25(Integer.valueOf(xpp.nextText()));
+                            } else if ("updatetime".equals(tag)) {
+                                todayWeatherInfo.setUpdateTime(xpp.nextText());
+                            } else if ("quality".equals(tag)) {
+                                todayWeatherInfo.setAirQuality(xpp.nextText());
+                            } else if ("yesterday".equals(tag)) {//昨天天气
+                                weatherForcast = new WeatherForcast();
+                            } else if ("date_1".equals(tag)) {
+                                weatherForcast.setDate(xpp.nextText());
+                            } else if ("high_1".equals(tag)) {
+                                weatherForcast.setHighTemper(xpp.nextText());
+                            } else if ("low_1".equals(tag)) {
+                                weatherForcast.setLowTemper(xpp.nextText());
+                            } else if ("day_1".equals(tag)) {
                                 dayFlag = true;
-                            }
-                            else if("type".equals(tag)){
-                                if(dayFlag){
-                                    weatherInfo.setWeatherDay(xpp.nextText());
+                            } else if ("night_1".equals(tag)) {
+                                dayFlag = false;
+                            } else if ("type_1".equals(tag)) {
+                                if (dayFlag) {
+                                    weatherForcast.setWeatherDay(xpp.nextText());
+                                } else {
+                                    weatherForcast.setWeatherNight(xpp.nextText());
                                 }
-                                else {
-                                    weatherInfo.setWeatherNight(xpp.nextText());
+                            } else if ("fx_1".equals(tag)) {
+                                if (dayFlag) {
+                                    weatherForcast.setDayWindDirection(xpp.nextText());
+                                } else {
+                                    weatherForcast.setNightWindDirection(xpp.nextText());
                                 }
+                            } else if ("fl_1".equals(tag)) {
+                                if (dayFlag) {
+                                    weatherForcast.setDayWindForce(xpp.nextText());
+                                } else {
+                                    weatherForcast.setNightWindForce(xpp.nextText());
+                                }
+                            } else if ("weather".equals(tag)) {//今天及之后4天的天气
+                                weatherForcast = new WeatherForcast();
+                                dayCnt++;
+                            } else if ("high".equals(tag)) {
+                                String text = xpp.nextText();
+                                if (dayCnt == 1) {//今天的信息
+                                    todayWeatherInfo.setHighTemper(text);
+                                }
+                                weatherForcast.setHighTemper(text);
+                            } else if ("low".equals(tag)) {
+                                String text = xpp.nextText();
+                                if (dayCnt == 1) {
+                                    todayWeatherInfo.setLowTemper(text);
+                                }
+                                weatherForcast.setLowTemper(text);
+                            } else if ("day".equals(tag)) {
+                                dayFlag = true;
+                            } else if ("night".equals(tag)) {
+                                dayFlag = false;
+                            } else if ("type".equals(tag)) {
+                                String text = xpp.nextText();
+                                if (dayFlag) {
+                                    if (dayCnt == 1) {
+                                        todayWeatherInfo.setWeatherDay(text);
+                                    }
+                                    weatherForcast.setWeatherDay(text);
+                                } else {
+                                    if (dayCnt == 1) {
+                                        todayWeatherInfo.setWeatherNight(text);
+                                    }
+                                    weatherForcast.setWeatherNight(text);
+                                }
+                            } else if ("fengxiang".equals(tag)) {
+                                String text = xpp.nextText();
+                                if (dayCnt > 0) {
+                                    if (dayFlag) {
+                                        weatherForcast.setDayWindDirection(text);
+                                    } else {
+                                        weatherForcast.setNightWindDirection(text);
+                                    }
+                                }
+
+                            } else if ("fengli".equals(tag)) {
+                                if (dayCnt > 0) {
+                                    if (dayFlag) {
+                                        weatherForcast.setDayWindForce(xpp.nextText());
+                                    } else {
+                                        weatherForcast.setNightWindForce(xpp.nextText());
+                                    }
+                                }
+
                             }
+
 
                         }
                         else if(eventType == XmlPullParser.END_TAG){
                             String tag = xpp.getName();
-                            if("day".equals(tag)) dayFlag = false;//进入读取夜晚信息区域
-                            else if("weather".equals(tag)){
-                                break;//第一天的天气读取结束
+                            if ("weather".equals(tag) || "yesterday".equals(tag)) {
+                                weatherForcasts.add(weatherForcast);
                             }
+
                         }
                         eventType = xpp.next();//进入下一个标签
                     }
@@ -250,34 +315,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateWeatherUI(){
-        city.setText(weatherInfo.getCity());
-        time.setText(String.format(getString(R.string.temp_update_time), weatherInfo.getUpdateTime()));
-        humidity.setText(String.format(getString(R.string.wetness), weatherInfo.getWetness()));
-        pm_data.setText(String.valueOf(weatherInfo.getPm25()));
-        pm2_5_quality.setText(weatherInfo.getAirQuality());
+        city.setText(todayWeatherInfo.getCity());
+        time.setText(String.format(getString(R.string.temp_update_time), todayWeatherInfo.getUpdateTime()));
+        humidity.setText(String.format(getString(R.string.wetness), todayWeatherInfo.getWetness()));
+        pm_data.setText(String.valueOf(todayWeatherInfo.getPm25()));
+        pm2_5_quality.setText(todayWeatherInfo.getAirQuality());
         week_today.setText(String.format(getString(R.string.week_today), Utils.getWeekday()));
         String lowTemper = getString(R.string.unknown);
         String highTemper = getString(R.string.unknown);
-        if(weatherInfo.getLowTemper() != null){
-            lowTemper = weatherInfo.getLowTemper().substring(weatherInfo.getLowTemper().indexOf(' ')+1);
+        if (todayWeatherInfo.getLowTemper() != null) {
+            lowTemper = todayWeatherInfo.getLowTemper().substring(todayWeatherInfo.getLowTemper().indexOf(' ') + 1);
         }
-        if(weatherInfo.getHighTemper() != null){
-            highTemper = weatherInfo.getHighTemper().substring(weatherInfo.getHighTemper().indexOf(' ')+1);
+        if (todayWeatherInfo.getHighTemper() != null) {
+            highTemper = todayWeatherInfo.getHighTemper().substring(todayWeatherInfo.getHighTemper().indexOf(' ') + 1);
         }
         temperature.setText(String.format(getString(R.string.temp_range), lowTemper, highTemper));
         String weatherType = null;
         if(Utils.judgeDay()){
-            weatherType = weatherInfo.getWeatherDay();
+            weatherType = todayWeatherInfo.getWeatherDay();
         }
         else{
-            weatherType = weatherInfo.getWeatherNight();
+            weatherType = todayWeatherInfo.getWeatherNight();
         }
         climate.setText(weatherType);
         if(weahterImgs.get(weatherType) != null){
             weather_img.setImageResource(weahterImgs.get(weatherType));
         }
 
-        int windForceInd = weatherInfo.getWindForce();
+        int windForceInd = todayWeatherInfo.getWindForce();
         String[] windForces = getResources().getStringArray(R.array.wind_forces);
         if(windForceInd != -1 && windForceInd < windForces.length){
             wind.setText(windForces[windForceInd]);
@@ -285,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             wind.setText(R.string.unknown);
         }
-        int pm25 = weatherInfo.getPm25();
+        int pm25 = todayWeatherInfo.getPm25();
         if(pm25 <= 50){
             pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_0_50);
         }
@@ -305,7 +370,114 @@ public class MainActivity extends AppCompatActivity {
             pm2_5_img.setImageResource(R.drawable.biz_plugin_weather_greater_300
             );
         }
+        
+        int forcastSize = weatherForcasts.size();
+        if(forcastSize > 5){
+            WeatherForcast forcast = weatherForcasts.get(5);
+            tv_day6_title.setText(Utils.certainWeekday(4));
+            tv_day6_date.setText(Utils.certainDate(4));
+            if(Utils.judgeDay()){
+                tv_day6_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day6_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day6_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day6_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
+        if(forcastSize > 4){
+            WeatherForcast forcast = weatherForcasts.get(4);
+            tv_day5_title.setText(Utils.certainWeekday(3));
+            tv_day5_date.setText(Utils.certainDate(3));
+            if(Utils.judgeDay()){
+                tv_day5_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day5_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day5_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day5_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
+        
+        if(forcastSize > 3){
+            WeatherForcast forcast = weatherForcasts.get(3);
+            tv_day4_title.setText(Utils.certainWeekday(2));
+            tv_day4_date.setText(Utils.certainDate(2));
+            if(Utils.judgeDay()){
+                tv_day4_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day4_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day4_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day4_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
+        
+        if(forcastSize > 2){
+            WeatherForcast forcast = weatherForcasts.get(2);
+            tv_day3_title.setText(Utils.certainWeekday(1));
+            tv_day3_date.setText(Utils.certainDate(1));
+            if(Utils.judgeDay()){
+                tv_day3_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day3_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day3_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day3_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
+        
+        if(forcastSize > 1){
+            WeatherForcast forcast = weatherForcasts.get(1);
+            tv_day2_title.setText(Utils.certainWeekday(0));
+            tv_day2_date.setText(Utils.certainDate(0));
+            if(Utils.judgeDay()){
+                tv_day2_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day2_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day2_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day2_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
 
+        if(forcastSize > 0){
+            WeatherForcast forcast = weatherForcasts.get(0);
+            tv_day1_title.setText(Utils.certainWeekday(-1));
+            tv_day1_date.setText(Utils.certainDate(-1));
+            if(Utils.judgeDay()){
+                tv_day1_weather.setText(forcast.getWeatherDay());
+            }
+            else{
+                tv_day1_weather.setText(forcast.getWeatherNight());
+            }
+            if(Utils.judgeDay()){
+                iv_day1_weather.setImageResource(weahterImgs.get(forcast.getWeatherDay()));
+            }
+            else{
+                iv_day1_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
+            }
+        }
 
     }
 
@@ -342,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
                    String url = Constant.WEATHER_URL + cityInfo.getNumber();
                    title_city_name.setText(cityInfo.getCity());
                    cityCode = cityInfo.getNumber();
-                   getWeahterInfo(url);
+                   getWeatherInfo(url);
                }
            }
     }

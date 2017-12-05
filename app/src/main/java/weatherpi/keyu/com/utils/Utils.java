@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,6 +39,26 @@ public class Utils {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
         return dateFormat.format(date);
+    }
+
+    /*
+    * 根据距离今天的时间来显示日期
+    * */
+    public static String certainWeekday(int distance) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, distance);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
+        return dateFormat.format(calendar.getTime());
+    }
+
+    /*
+    * 根据距离今天的时间来显示日期
+    * */
+    public static String certainDate(int distance) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, distance);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd");
+        return dateFormat.format(calendar.getTime());
     }
 
     public static boolean judgeDay(){
