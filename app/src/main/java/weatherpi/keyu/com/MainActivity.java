@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                             } else if ("quality".equals(tag)) {
                                 todayWeatherInfo.setAirQuality(xpp.nextText());
                             } else if ("yesterday".equals(tag)) {//昨天天气
+                                weatherForcasts.clear();
                                 weatherForcast = new WeatherForcast();
                             } else if ("date_1".equals(tag)) {
                                 weatherForcast.setDate(xpp.nextText());
