@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_day6_weather;
     private ImageView iv_day6_weather;
     private List<WeatherForcast> weatherForcasts;
+    private WeatherChartView chartView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,12 +122,8 @@ public class MainActivity extends AppCompatActivity {
         initWeatherMap();
         todayWeatherInfo = new WeatherInfo();
         weatherForcasts = new ArrayList<>();
-        WeatherChartView chartView = (WeatherChartView) findViewById(R.id.line_char);
-        // set day
-        chartView.setTempDay(new int[]{14, 15, 16, 17, 9, 9});
-        // set night
-        chartView.setTempNight(new int[]{7, 5, 9, 10, 3, 2});
-        chartView.invalidate();
+        chartView = (WeatherChartView) findViewById(R.id.line_char);
+
 
         tv_day1_title = (TextView) findViewById(R.id.tv_day1_title);
         tv_day1_date = (TextView) findViewById(R.id.tv_day1_date);
@@ -478,6 +475,31 @@ public class MainActivity extends AppCompatActivity {
                 iv_day1_weather.setImageResource(weahterImgs.get(forcast.getWeatherNight()));
             }
         }
+        int lows[] = new int[forcastSize];
+        int highs[] = new int[forcastSize];
+        for(int i = 0; i < forcastSize; i++){
+            String curHighTemper = weatherForcasts.get(i).getHighTemper();
+            int high = 0;
+            String highTemperStr = curHighTemper.substring(curHighTemper.indexOf(' ') + 1, curHighTemper.length() -1);
+            if(highTemperStr != null && Utils.isNumber(highTemperStr)){
+                high = Integer.valueOf(highTemperStr);
+            }
+            highs[i] = high;
+
+            String curLowTemper = weatherForcasts.get(i).getLowTemper();
+            int low = 0;
+            String lowTemperStr = curLowTemper.substring(curLowTemper.indexOf(' ') + 1, curLowTemper.length() -1);
+            if(lowTemperStr != null && Utils.isNumber(lowTemperStr)){
+                low = Integer.valueOf(lowTemperStr);
+            }
+            lows[i] = low;
+        }
+        Utils.log(getLocalClassName(), "high , low");
+        // set day
+        chartView.setTempDay(highs);
+        // set night
+        chartView.setTempNight(lows);
+        chartView.invalidate();
 
     }
 

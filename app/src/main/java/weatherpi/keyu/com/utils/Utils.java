@@ -107,4 +107,10 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean isNumber(String str){
+        String regex = "[-]?[0-9]+";
+        if(str != null && str.matches(regex)) return  true;
+        return  false;
+    }
 }
