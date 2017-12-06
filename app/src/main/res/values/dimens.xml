@@ -3,4 +3,6 @@
     <dimen name="dot_radius">16dp</dimen>
     <dimen name="dot_layout_height">30dp</dimen>
     <dimen name="dot_layout_margin_bottom">30dp</dimen>
+    <dimen name="sp16">16sp</dimen>
+    <dimen name="sp14">14sp</dimen>
 </resources>

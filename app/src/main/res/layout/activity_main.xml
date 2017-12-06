@@ -251,6 +251,7 @@
                 android:id="@+id/layout_six_days"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal">
                 <!--day1-->
                 <LinearLayout
@@ -266,6 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="昨天"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/weather_yesterday" />
 
                     <TextView
@@ -274,6 +276,7 @@
                         android:id="@+id/tv_day1_date"
                         android:layout_gravity="center_horizontal"
                         android:text="12/02"
+                        android:textSize="@dimen/sp14"
                         android:textColor="@color/weather_yesterday" />
 
                     <TextView
@@ -282,6 +285,7 @@
                         android:id="@+id/tv_day1_air_quality"
                         android:layout_gravity="center_horizontal"
                         android:text="良好"
+                        android:visibility="gone"
                         android:textColor="@color/weather_yesterday" />
 
                     <TextView
@@ -290,6 +294,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day1_weather"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/weather_yesterday" />
 
                     <ImageView
@@ -313,6 +318,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day2_title"
                         android:text="今天"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -321,6 +327,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day2_date"
                         android:text="12/03"
+                        android:textSize="@dimen/sp14"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -329,6 +336,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day2_air_quality"
                         android:text="良好"
+                        android:visibility="gone"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -337,6 +345,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day2_weather"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <ImageView
@@ -359,6 +368,7 @@
                         android:layout_gravity="center_horizontal"
                         android:text="周一"
                         android:id="@+id/tv_day3_title"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -366,6 +376,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="12/04"
+                        android:textSize="@dimen/sp14"
                         android:id="@+id/tv_day3_date"
                         android:textColor="@color/color_weather_predict" />
 
@@ -374,6 +385,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="良好"
+                        android:visibility="gone"
                         android:id="@+id/tv_day3_air_quality"
                         android:textColor="@color/color_weather_predict" />
 
@@ -382,6 +394,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:id="@+id/tv_day3_weather"
                         android:textColor="@color/color_weather_predict" />
 
@@ -405,6 +418,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day4_title"
                         android:text="周二"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -412,6 +426,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="12/05"
+                        android:textSize="@dimen/sp14"
                         android:id="@+id/tv_day4_date"
                         android:textColor="@color/color_weather_predict" />
 
@@ -421,6 +436,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day4_air_quality"
                         android:text="良好"
+                        android:visibility="gone"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -429,6 +445,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day4_weather"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <ImageView
@@ -452,6 +469,7 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/tv_day5_title"
                         android:text="周三"
+                        android:textSize="@dimen/sp16"
                         android:textColor="@color/color_weather_predict" />
 
                     <TextView
@@ -459,6 +477,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="12/06"
+                        android:textSize="@dimen/sp14"
                         android:id="@+id/tv_day5_date"
                         android:textColor="@color/color_weather_predict" />
 
@@ -467,6 +486,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="良好"
+                        android:visibility="gone"
                         android:id="@+id/tv_day5_air_quality"
                         android:textColor="@color/color_weather_predict" />
 
@@ -475,6 +495,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:id="@+id/tv_day5_weather"
                         android:textColor="@color/color_weather_predict" />
 
@@ -498,6 +519,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="周四"
+                        android:textSize="@dimen/sp16"
                         android:id="@+id/tv_day6_title"
                         android:textColor="@color/color_weather_predict" />
 
@@ -506,6 +528,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="12/07"
+                        android:textSize="@dimen/sp14"
                         android:id="@+id/tv_day6_date"
                         android:textColor="@color/color_weather_predict" />
 
@@ -514,6 +537,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="良好"
+                        android:visibility="gone"
                         android:id="@+id/tv_day6_air_quality"
                         android:textColor="@color/color_weather_predict" />
 
@@ -522,6 +546,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="晴"
+                        android:textSize="@dimen/sp16"
                         android:id="@+id/tv_day6_weather"
                         android:textColor="@color/color_weather_predict" />
 
